@@ -379,8 +379,7 @@
                         android:text="Confirm"
                         android:backgroundTint="#4CAF50"
                         android:textColor="@android:color/white"
-                        android:textSize="12sp"
-                        android:visibility="gone"
+                        android:textSize="12sp" :visibility="gone"
                         android:layout_marginEnd="8dp" />
 
                 </LinearLayout>
@@ -883,35 +882,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Last Received Image:"
+                    android:text="Received Images:"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#333333"
                     android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/receivedImageIdText"
+                <LinearLayout
+                    android:id="@+id/imageContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No image received yet"
-                    android:textSize="14sp"
-                    android:textColor="#666666"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center" />
-
-                <ImageView
-                    android:id="@+id/receivedImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:scaleType="fitCenter"
-                    android:background="#E0E0E0"
-                    android:src="@android:drawable/ic_menu_gallery" />
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal" />
 
             </LinearLayout>
 

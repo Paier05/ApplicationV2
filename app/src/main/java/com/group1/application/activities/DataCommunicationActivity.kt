@@ -9,9 +9,11 @@ import android.util.Base64
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -50,8 +52,7 @@ class DataCommunicationActivity : AppCompatActivity(),
     private lateinit var gridTableHeaderText: TextView
     private lateinit var gridView: GridView
     private lateinit var gridAdapter: GridTableAdapter
-    private lateinit var receivedImageView: ImageView
-    private lateinit var receivedImageIdText: TextView
+    private lateinit var imageContainer: LinearLayout
 
     // Controllers and Managers
     private lateinit var dataCommunicationManager: DataCommunicationManager
@@ -61,6 +62,9 @@ class DataCommunicationActivity : AppCompatActivity(),
     private var messageParser: MessageParser? = null
 
     private var connectedDeviceName = "Unknown Device"
+
+    // Message Buffer for Bluetooth fragmentation
+    private val incomingMessageBuffer = StringBuilder()
 
     // Reconnect grace period management (60s)
     private val disconnectHandler = Handler(Looper.getMainLooper())
@@ -72,7 +76,7 @@ class DataCommunicationActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_communication)
 
-        connectedDeviceName = getIntent().getStringExtra(BluetoothConstants.EXTRA_DEVICE_NAME) ?: "Unknown Device"
+        connectedDeviceName = intent.getStringExtra(BluetoothConstants.EXTRA_DEVICE_NAME) ?: "Unknown Device"
 
         initializeControllers()
         initializeViews()
@@ -100,8 +104,7 @@ class DataCommunicationActivity : AppCompatActivity(),
     private fun initializeViews() {
         gridTableHeaderText = findViewById(R.id.gridTableHeaderText)
         gridView = findViewById(R.id.gridView)
-        receivedImageView = findViewById(R.id.receivedImageView)
-        receivedImageIdText = findViewById(R.id.receivedImageIdText)
+        imageContainer = findViewById(R.id.imageContainer)
 
         findViewById<Button>(R.id.disconnectButton).setOnClickListener { disconnect() }
     }
@@ -379,24 +382,34 @@ class DataCommunicationActivity : AppCompatActivity(),
         runOnUiThread {
             dataCommunicationManager.onDataReceived()
 
-            messageParser?.let { parser ->
-                val parts = data.split("\n")
-                    .map { it.trim() }
-                    .filter { it.isNotEmpty() }
+            // Append new data to buffer
+            incomingMessageBuffer.append(data)
 
-                for (part in parts) {
-                    parser.parseAndHandleRobotCommands(part)
-                    parser.parseAndHandleTargetMessages(part)
-                    parser.parseAndHandleRobotMessages(part)
-                    parser.parseAndHandleMoveCommand(part)
-                    parser.parseAndHandleImageMessages(part)
+            // Extract and process complete lines
+            var newlineIndex: Int
+            while (incomingMessageBuffer.indexOf("\n").also { newlineIndex = it } != -1) {
+                val line = incomingMessageBuffer.substring(0, newlineIndex).trim()
+                incomingMessageBuffer.delete(0, newlineIndex + 1)
 
-                    if (parser.shouldDisplayMessage(part)) {
-                        dataCommunicationManager.addImportantMessage(part)
-                    } else {
-                        Log.d(TAG, "Filtered out message: $part")
-                    }
+                if (line.isNotEmpty()) {
+                    processIncomingMessage(line)
                 }
+            }
+        }
+    }
+
+    private fun processIncomingMessage(message: String) {
+        messageParser?.let { parser ->
+            parser.parseAndHandleRobotCommands(message)
+            parser.parseAndHandleTargetMessages(message)
+            parser.parseAndHandleRobotMessages(message)
+            parser.parseAndHandleMoveCommand(message)
+            parser.parseAndHandleImageMessages(message)
+
+            if (parser.shouldDisplayMessage(message)) {
+                dataCommunicationManager.addImportantMessage(message)
+            } else {
+                Log.d(TAG, "Filtered out message: $message")
             }
         }
     }
@@ -466,17 +479,67 @@ class DataCommunicationActivity : AppCompatActivity(),
 
     override fun onImageReceived(obstacleId: String, imageId: String, imageData: String) {
         try {
-            val decodedString = Base64.decode(imageData, Base64.DEFAULT)
+            // Clean the image data - remove any potentially problematic whitespace
+            val cleanedData = imageData.trim().replace("\\s".toRegex(), "")
+            val decodedString = Base64.decode(cleanedData, Base64.DEFAULT)
             val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-            receivedImageView.setImageBitmap(decodedByte)
-            receivedImageIdText.text = "Obstacle: $obstacleId | Image ID: $imageId"
-            
-            // Auto switch to image section when image is received
-            fabMenuController.showImageSection()
+            if (decodedByte != null) {
+                // Create a new view for this image
+                addImageToContainer(obstacleId, imageId, decodedByte)
+                
+                // Auto switch to image section when image is received
+                fabMenuController.showImageSection()
+            } else {
+                Log.e(TAG, "Failed to decode bitmap from byte array")
+                showToast("Received image data is invalid")
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Error decoding image data", e)
-            showToast("Failed to decode received image")
+            showToast("Failed to decode received image: ${e.message}")
         }
+    }
+
+    private fun addImageToContainer(obstacleId: String, imageId: String, bitmap: android.graphics.Bitmap) {
+        val context = this
+        val linearLayout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 0, 0, 32)
+            }
+            gravity = android.view.Gravity.CENTER_HORIZONTAL
+        }
+
+        val textView = TextView(context).apply {
+            text = "Obstacle: $obstacleId | Image ID: $imageId"
+            textSize = 14f
+            setTextColor(android.graphics.Color.parseColor("#666666"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 0, 0, 16)
+            }
+            gravity = android.view.Gravity.CENTER
+        }
+
+        val imageView = ImageView(context).apply {
+            setImageBitmap(bitmap)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                800 // height in pixels
+            )
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setBackgroundColor(android.graphics.Color.parseColor("#E0E0E0"))
+        }
+
+        linearLayout.addView(textView)
+        linearLayout.addView(imageView)
+        
+        // Add to the top of the container so latest is first
+        imageContainer.addView(linearLayout, 0)
     }
 
     override fun showToast(message: String) {
