@@ -470,7 +470,7 @@ class DataCommunicationActivity : AppCompatActivity(),
     override fun onTargetMessageParsed(obstacleNumber: Int, targetId: String) {}
     override fun onRobotPositionParsed(x: Int, y: Int, direction: String) {}
 
-    override fun onImageReceived(obstacleId: String, imageId: String, imageData: String) {
+    override fun onImageReceived(imageData: String) {
         try {
             // Clean the image data - remove any potentially problematic whitespace
             val cleanedData = imageData.trim().replace("\\s".toRegex(), "")
@@ -478,7 +478,7 @@ class DataCommunicationActivity : AppCompatActivity(),
             val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
             if (decodedByte != null) {
                 // Create a new view for this image
-                addImageToContainer(obstacleId, imageId, decodedByte)
+                addImageToContainer(decodedByte)
                 
                 // Auto switch to image section when image is received
                 fabMenuController.showImageSection()
@@ -492,8 +492,10 @@ class DataCommunicationActivity : AppCompatActivity(),
         }
     }
 
-    private fun addImageToContainer(obstacleId: String, imageId: String, bitmap: android.graphics.Bitmap) {
+    private fun addImageToContainer(bitmap: android.graphics.Bitmap) {
         val context = this
+        val timestamp = getCurrentTimestamp()
+        
         val linearLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
@@ -506,7 +508,7 @@ class DataCommunicationActivity : AppCompatActivity(),
         }
 
         val textView = TextView(context).apply {
-            text = "Obstacle: $obstacleId | Image ID: $imageId"
+            text = "Received at: $timestamp"
             textSize = 14f
             setTextColor(android.graphics.Color.parseColor("#666666"))
             layoutParams = LinearLayout.LayoutParams(

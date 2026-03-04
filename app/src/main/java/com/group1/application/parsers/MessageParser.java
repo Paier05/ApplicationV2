@@ -59,7 +59,7 @@ public class MessageParser {
         void onRobotCommandParsed(String command);
         void onTargetMessageParsed(int obstacleNumber, String targetId);
         void onRobotPositionParsed(int x, int y, String direction);
-        void onImageReceived(String obstacleId, String imageId, String imageData);
+        void onImageReceived(String imageData);
 
         void showToast(String message);
         String getCurrentTimestamp();
@@ -289,7 +289,7 @@ public class MessageParser {
     }
 
     /**
-     * Parse and handle IMAGE messages in JSON format: {"cat": "image", "value": "{\"image_id\": \"A\", \"obstacle_id\": \"1\", \"image_data\": \"...\"}"}
+     * Parse and handle IMAGE messages in JSON format: {"cat": "image", "value": "base64_data"}
      */
     public void parseAndHandleImageMessages(String data) {
         if (data == null) return;
@@ -303,38 +303,20 @@ public class MessageParser {
             if (jsonObject.has("cat") && "image".equals(jsonObject.getString("cat"))) {
 
                 if (jsonObject.has("value")) {
-                    JSONObject valueObject;
-                    Object valueRaw = jsonObject.get("value");
-                    if (valueRaw instanceof String) {
-                        String valueString = jsonObject.getString("value");
-                        valueObject = new JSONObject(valueString);
-                    } else {
-                        valueObject = jsonObject.getJSONObject("value");
-                    }
+                    String imageData = jsonObject.getString("value");
 
-                    if (valueObject.has("image_id") && valueObject.has("obstacle_id") && valueObject.has("image_data")) {
-                        String imageId = valueObject.getString("image_id");
-                        String obstacleId = valueObject.getString("obstacle_id");
-                        String imageData = valueObject.getString("image_data");
+                    if (listener != null) {
+                        listener.onImageReceived(imageData);
 
-                        if (listener != null) {
-                            listener.onImageReceived(obstacleId, imageId, imageData);
-
-                            String timestamp = listener.getCurrentTimestamp();
-                            String formattedMessage = "[" + timestamp + "] IMAGE Received: Obstacle " + obstacleId + " -> Image ID: " + imageId + "\n";
-                            listener.appendToReceivedData(formattedMessage);
-                            listener.showToast("Image received for obstacle " + obstacleId);
-                        }
-                    } else {
-                        Log.w(TAG, "Missing image_id, obstacle_id, or image_data in JSON value object");
-                        if (listener != null) {
-                            listener.showToast("Invalid image message: missing required fields");
-                        }
+                        String timestamp = listener.getCurrentTimestamp();
+                        String formattedMessage = "[" + timestamp + "] IMAGE Received\n";
+                        listener.appendToReceivedData(formattedMessage);
+                        listener.showToast("Image received");
                     }
                 } else {
-                    Log.w(TAG, "Missing 'value' object in image JSON message");
+                    Log.w(TAG, "Missing 'value' in image JSON message");
                     if (listener != null) {
-                        listener.showToast("Invalid image message: missing value object");
+                        listener.showToast("Invalid image message: missing value");
                     }
                 }
             }
