@@ -1,6 +1,7 @@
 package com.group1.application.controllers;
 
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ public class FabMenuController {
     private FloatingActionButton fabMain, fabSend, fabReceive, fabObstacle, fabRobot, fabStart, fabImage;
     private TextView fabSendLabel, fabReceiveLabel, fabObstacleLabel, fabRobotLabel, fabStartLabel, fabImageLabel;
     private ScrollView sendDataSection, receiveDataSection, obstacleControlSection, robotControlSection, startSection, imageSection;
+    private LinearLayout gridTableSection;
     private boolean isFabMenuOpen = false;
 
     private OnFabMenuListener listener;
@@ -47,7 +49,8 @@ public class FabMenuController {
                                TextView fabRobotLabel, TextView fabStartLabel, TextView fabImageLabel,
                                ScrollView sendDataSection, ScrollView receiveDataSection,
                                ScrollView obstacleControlSection, ScrollView robotControlSection,
-                               ScrollView startSection, ScrollView imageSection) {
+                               ScrollView startSection, ScrollView imageSection,
+                               LinearLayout gridTableSection) {
         this.fabMain = fabMain;
         this.fabSend = fabSend;
         this.fabReceive = fabReceive;
@@ -67,6 +70,7 @@ public class FabMenuController {
         this.robotControlSection = robotControlSection;
         this.startSection = startSection;
         this.imageSection = imageSection;
+        this.gridTableSection = gridTableSection;
 
         setupClickListeners();
     }
@@ -258,6 +262,7 @@ public class FabMenuController {
     }
 
     public void showSendDataSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.VISIBLE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
@@ -268,6 +273,7 @@ public class FabMenuController {
     }
 
     public void showReceiveDataSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.VISIBLE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
@@ -278,6 +284,7 @@ public class FabMenuController {
     }
 
     public void showObstacleSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.VISIBLE);
@@ -287,6 +294,7 @@ public class FabMenuController {
     }
 
     public void showRobotSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
@@ -297,6 +305,7 @@ public class FabMenuController {
     }
 
     public void showStartSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
@@ -307,6 +316,7 @@ public class FabMenuController {
     }
 
     public void showImageSection() {
+        if (gridTableSection != null) gridTableSection.setVisibility(View.GONE);
         if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
