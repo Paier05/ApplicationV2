@@ -1,104 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:background="@android:color/white"
     tools:context=".activities.BluetoothActivity">
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="#333333"
-        android:padding="12dp"
-        android:text="Bluetooth Status"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
+    <!-- Header Section - Semi-transparent deep blue -->
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:background="#E61565C0"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/scanButton"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scan_devices"
-            android:backgroundTint="#4CAF50"
+            android:text="Bluetooth Connection"
             android:textColor="@android:color/white"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/modeToggleButton"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Mode: Client"
-            android:backgroundTint="#2196F3"
+            android:layout_marginTop="8dp"
+            android:alpha="0.9"
+            android:text="Ready to scan for devices"
             android:textColor="@android:color/white"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp" />
-
+            android:textSize="14sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/deviceListHeader"
+    <!-- Controls Section -->
+    <LinearLayout
+        android:id="@+id/controlsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Available Devices (tap to act)"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/scanButton"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/scan_devices"
+            app:icon="@android:drawable/ic_menu_search" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/modeToggleButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Mode: Client"
+            app:icon="@android:drawable/ic_menu_preferences" />
+    </LinearLayout>
+
+    <!-- Device List Section -->
+    <TextView
+        android:id="@+id/deviceListHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Available Devices"
+        android:textColor="#333333"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="#333333" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/controlsLayout" />
 
     <ListView
         android:id="@+id/devicesList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"
-        android:background="@android:color/white" />
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/instructionsCard"
+        app:layout_constraintTop_toBottomOf="@id/deviceListHeader" />
 
-    <!-- Connection Instructions -->
-    <LinearLayout
+    <!-- Instructions Section -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/instructionsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:background="#F5F5F5"
-        android:padding="16dp">
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="#F8F9FA"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:strokeColor="#E0E0E0"
+        app:strokeWidth="1dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/instructions"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:layout_marginBottom="8dp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1. Tap 'Scan Devices' to find available Bluetooth devices\n2. Toggle Mode to choose Client or Server\n3. Tap a device: in Client mode you connect; in Server mode you wait for it\n4. Once connected, you'll be taken to the communication screen"
-            android:textSize="12sp"
-            android:textColor="#666666"
-            android:lineSpacingExtra="2dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/instructions"
+                android:textColor="#1565C0"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="1. Tap 'Scan Devices' to find available Bluetooth devices\n2. Toggle Mode to choose Client or Server\n3. Tap a device: in Client mode you connect; in Server mode you wait for it\n4. Once connected, you'll be taken to the communication screen"
+                android:textColor="#666666"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
