@@ -132,20 +132,18 @@ class DataCommunicationActivity : AppCompatActivity(),
             findViewById(R.id.fabReceive),
             findViewById(R.id.fabObstacle),
             findViewById(R.id.fabRobot),
-            findViewById(R.id.fabStart),
             findViewById(R.id.fabImage),
             findViewById(R.id.fabSendLabel),
             findViewById(R.id.fabReceiveLabel),
             findViewById(R.id.fabObstacleLabel),
             findViewById(R.id.fabRobotLabel),
-            findViewById(R.id.fabStartLabel),
             findViewById(R.id.fabImageLabel),
             findViewById(R.id.sendDataSection),
             findViewById(R.id.receiveDataSection),
             findViewById(R.id.obstacleControlSection),
             findViewById(R.id.robotControlSection),
-            findViewById(R.id.startSection),
-            findViewById(R.id.imageSection)
+            findViewById(R.id.imageSection),
+            findViewById(R.id.gridTableSection)
         )
 
         // Setup Robot Controller
@@ -186,7 +184,7 @@ class DataCommunicationActivity : AppCompatActivity(),
             obstacleController.enterRemoveMode()
         }
 
-        findViewById<Button?>(R.id.startButton)?.setOnClickListener {
+        findViewById<Button?>(R.id.startTopButton)?.setOnClickListener {
             dataCommunicationManager.sendQuickMessage("Start")
         }
     }
@@ -449,11 +447,6 @@ class DataCommunicationActivity : AppCompatActivity(),
             clearTemporaryObstacle()
             fabMenuController.showRobotSection()
         }
-    }
-
-    override fun onStartSectionSelected() {
-        clearTemporaryObstacle(); exitRobotMode()
-        fabMenuController.showStartSection()
     }
 
     override fun onImageSectionSelected() {

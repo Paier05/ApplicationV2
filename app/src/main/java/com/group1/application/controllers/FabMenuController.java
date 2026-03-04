@@ -16,9 +16,9 @@ public class FabMenuController {
     private final android.content.Context context;
 
     // FAB menu components
-    private FloatingActionButton fabMain, fabSend, fabReceive, fabObstacle, fabRobot, fabStart, fabImage;
-    private TextView fabSendLabel, fabReceiveLabel, fabObstacleLabel, fabRobotLabel, fabStartLabel, fabImageLabel;
-    private ScrollView sendDataSection, receiveDataSection, obstacleControlSection, robotControlSection, startSection, imageSection;
+    private FloatingActionButton fabMain, fabSend, fabReceive, fabObstacle, fabRobot, fabImage;
+    private TextView fabSendLabel, fabReceiveLabel, fabObstacleLabel, fabRobotLabel, fabImageLabel;
+    private ScrollView sendDataSection, receiveDataSection, obstacleControlSection, robotControlSection, imageSection;
     private LinearLayout gridTableSection;
     private boolean isFabMenuOpen = false;
 
@@ -29,7 +29,6 @@ public class FabMenuController {
         void onReceiveDataSectionSelected();
         void onObstacleModeToggled();
         void onRobotPanelToggled();
-        void onStartSectionSelected();
         void onImageSectionSelected();
     }
 
@@ -43,32 +42,29 @@ public class FabMenuController {
 
     public void setUIComponents(FloatingActionButton fabMain, FloatingActionButton fabSend,
                                FloatingActionButton fabReceive, FloatingActionButton fabObstacle,
-                               FloatingActionButton fabRobot, FloatingActionButton fabStart,
+                               FloatingActionButton fabRobot,
                                FloatingActionButton fabImage,
                                TextView fabSendLabel, TextView fabReceiveLabel, TextView fabObstacleLabel,
-                               TextView fabRobotLabel, TextView fabStartLabel, TextView fabImageLabel,
+                               TextView fabRobotLabel, TextView fabImageLabel,
                                ScrollView sendDataSection, ScrollView receiveDataSection,
                                ScrollView obstacleControlSection, ScrollView robotControlSection,
-                               ScrollView startSection, ScrollView imageSection,
+                               ScrollView imageSection,
                                LinearLayout gridTableSection) {
         this.fabMain = fabMain;
         this.fabSend = fabSend;
         this.fabReceive = fabReceive;
         this.fabObstacle = fabObstacle;
         this.fabRobot = fabRobot;
-        this.fabStart = fabStart;
         this.fabImage = fabImage;
         this.fabSendLabel = fabSendLabel;
         this.fabReceiveLabel = fabReceiveLabel;
         this.fabObstacleLabel = fabObstacleLabel;
         this.fabRobotLabel = fabRobotLabel;
-        this.fabStartLabel = fabStartLabel;
         this.fabImageLabel = fabImageLabel;
         this.sendDataSection = sendDataSection;
         this.receiveDataSection = receiveDataSection;
         this.obstacleControlSection = obstacleControlSection;
         this.robotControlSection = robotControlSection;
-        this.startSection = startSection;
         this.imageSection = imageSection;
         this.gridTableSection = gridTableSection;
 
@@ -111,15 +107,6 @@ public class FabMenuController {
             fabRobot.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onRobotPanelToggled();
-                }
-                closeFabMenu();
-            });
-        }
-
-        if (fabStart != null) {
-            fabStart.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onStartSectionSelected();
                 }
                 closeFabMenu();
             });
@@ -173,13 +160,11 @@ public class FabMenuController {
         if (fabReceive != null) fabReceive.setVisibility(View.VISIBLE);
         if (fabObstacle != null) fabObstacle.setVisibility(View.VISIBLE);
         if (fabRobot != null) fabRobot.setVisibility(View.VISIBLE);
-        if (fabStart != null) fabStart.setVisibility(View.VISIBLE);
         if (fabImage != null) fabImage.setVisibility(View.VISIBLE);
         if (fabSendLabel != null) fabSendLabel.setVisibility(View.VISIBLE);
         if (fabReceiveLabel != null) fabReceiveLabel.setVisibility(View.VISIBLE);
         if (fabObstacleLabel != null) fabObstacleLabel.setVisibility(View.VISIBLE);
         if (fabRobotLabel != null) fabRobotLabel.setVisibility(View.VISIBLE);
-        if (fabStartLabel != null) fabStartLabel.setVisibility(View.VISIBLE);
         if (fabImageLabel != null) fabImageLabel.setVisibility(View.VISIBLE);
     }
 
@@ -196,9 +181,6 @@ public class FabMenuController {
         if (fabRobot != null) {
             fabRobot.animate().translationY(0).alpha(1.0f).setDuration(300);
         }
-        if (fabStart != null) {
-            fabStart.animate().translationY(0).alpha(1.0f).setDuration(300);
-        }
         if (fabImage != null) {
             fabImage.animate().translationY(0).alpha(1.0f).setDuration(300);
         }
@@ -213,9 +195,6 @@ public class FabMenuController {
         }
         if (fabRobotLabel != null) {
             fabRobotLabel.animate().translationY(0).alpha(1.0f).setDuration(300);
-        }
-        if (fabStartLabel != null) {
-            fabStartLabel.animate().translationY(0).alpha(1.0f).setDuration(300);
         }
         if (fabImageLabel != null) {
             fabImageLabel.animate().translationY(0).alpha(1.0f).setDuration(300);
@@ -235,9 +214,6 @@ public class FabMenuController {
         if (fabRobot != null) {
             fabRobot.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabRobot.setVisibility(View.GONE));
         }
-        if (fabStart != null) {
-            fabStart.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabStart.setVisibility(View.GONE));
-        }
         if (fabImage != null) {
             fabImage.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabImage.setVisibility(View.GONE));
         }
@@ -253,9 +229,6 @@ public class FabMenuController {
         if (fabRobotLabel != null) {
             fabRobotLabel.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabRobotLabel.setVisibility(View.GONE));
         }
-        if (fabStartLabel != null) {
-            fabStartLabel.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabStartLabel.setVisibility(View.GONE));
-        }
         if (fabImageLabel != null) {
             fabImageLabel.animate().translationY(0).alpha(0.0f).setDuration(300).withEndAction(() -> fabImageLabel.setVisibility(View.GONE));
         }
@@ -267,7 +240,6 @@ public class FabMenuController {
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
         if (robotControlSection != null) robotControlSection.setVisibility(View.GONE);
-        if (startSection != null) startSection.setVisibility(View.GONE);
         if (imageSection != null) imageSection.setVisibility(View.GONE);
         showToast("Send Data Section");
     }
@@ -278,7 +250,6 @@ public class FabMenuController {
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.VISIBLE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
         if (robotControlSection != null) robotControlSection.setVisibility(View.GONE);
-        if (startSection != null) startSection.setVisibility(View.GONE);
         if (imageSection != null) imageSection.setVisibility(View.GONE);
         showToast("Receive Data Section");
     }
@@ -289,7 +260,6 @@ public class FabMenuController {
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.VISIBLE);
         if (robotControlSection != null) robotControlSection.setVisibility(View.GONE);
-        if (startSection != null) startSection.setVisibility(View.GONE);
         if (imageSection != null) imageSection.setVisibility(View.GONE);
     }
 
@@ -299,20 +269,8 @@ public class FabMenuController {
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
         if (robotControlSection != null) robotControlSection.setVisibility(View.VISIBLE);
-        if (startSection != null) startSection.setVisibility(View.GONE);
         if (imageSection != null) imageSection.setVisibility(View.GONE);
         showToast("Robot panel shown");
-    }
-
-    public void showStartSection() {
-        if (gridTableSection != null) gridTableSection.setVisibility(View.VISIBLE);
-        if (sendDataSection != null) sendDataSection.setVisibility(View.GONE);
-        if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
-        if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
-        if (robotControlSection != null) robotControlSection.setVisibility(View.GONE);
-        if (startSection != null) startSection.setVisibility(View.VISIBLE);
-        if (imageSection != null) imageSection.setVisibility(View.GONE);
-        showToast("Start Section");
     }
 
     public void showImageSection() {
@@ -321,7 +279,6 @@ public class FabMenuController {
         if (receiveDataSection != null) receiveDataSection.setVisibility(View.GONE);
         if (obstacleControlSection != null) obstacleControlSection.setVisibility(View.GONE);
         if (robotControlSection != null) robotControlSection.setVisibility(View.GONE);
-        if (startSection != null) startSection.setVisibility(View.GONE);
         if (imageSection != null) imageSection.setVisibility(View.VISIBLE);
         showToast("Image Section");
     }

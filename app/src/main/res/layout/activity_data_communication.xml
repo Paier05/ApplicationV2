@@ -48,6 +48,20 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/startTopButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    app:backgroundTint="#DCEDC8"
+                    android:textColor="#33691E"
+                    android:textSize="12sp"
+                    app:cornerRadius="20dp"
+                    android:padding="0dp"
+                    android:layout_marginEnd="8dp"
+                    app:minHeight="36dp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/disconnectButton"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
@@ -63,7 +77,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- 21x21 Grid Table Section - Maximized for larger display -->
+        <!-- 21x21 Grid Table Section -->
         <LinearLayout
             android:id="@+id/gridTableSection"
             android:layout_width="match_parent"
@@ -202,7 +216,7 @@
 
                 </LinearLayout>
 
-                <!-- Border Direction Selection (shown in Add mode only) -->
+                <!-- Border Direction Selection -->
                 <LinearLayout
                     android:id="@+id/borderDirectionSection"
                     android:layout_width="match_parent"
@@ -210,7 +224,6 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <!-- Border Highlight Controls -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -386,7 +399,6 @@
 
                 </LinearLayout>
 
-                <!-- Moved buttons below Temporary Obstacle Position Input Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -437,7 +449,6 @@
                     android:textColor="#333333"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Place & Confirm in the same row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -469,14 +480,12 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- Directional and Rotation buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center">
 
-                    <!-- Move Forward -->
                     <Button
                         android:id="@+id/robotUpButton"
                         android:layout_width="160dp"
@@ -488,7 +497,6 @@
                         android:textSize="12sp"
                         android:layout_marginBottom="8dp" />
 
-                    <!-- Turn Left / Turn Right row -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -519,7 +527,6 @@
 
                     </LinearLayout>
 
-                    <!-- Move Back -->
                     <Button
                         android:id="@+id/robotDownButton"
                         android:layout_width="160dp"
@@ -543,7 +550,6 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center" />
 
-                <!-- Robot Position Input Section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -741,7 +747,6 @@
 
                 </LinearLayout>
 
-                <!-- Sent Messages History -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -837,7 +842,6 @@
 
                 </ScrollView>
 
-                <!-- Message Count -->
                 <TextView
                     android:id="@+id/messageCountText"
                     android:layout_width="match_parent"
@@ -847,45 +851,6 @@
                     android:text="Messages: 0"
                     android:textColor="#666666"
                     android:textSize="12sp" />
-
-            </LinearLayout>
-
-        </ScrollView>
-
-        <!-- Start Section -->
-        <ScrollView
-            android:id="@+id/startSection"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#F5F5F5"
-            android:padding="16dp"
-            android:visibility="gone"
-            android:scrollbars="none"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Start Challenge:"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:layout_marginBottom="12dp" />
-
-                <Button
-                    android:id="@+id/startButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Start"
-                    android:backgroundTint="#4CAF50"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -942,7 +907,7 @@
         app:tint="@android:color/white"
         app:backgroundTint="#2196F3" />
 
-    <!-- Sub FABs (initially hidden) -->
+    <!-- Sub FABs -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabSend"
         android:layout_width="wrap_content"
@@ -982,7 +947,6 @@
         app:fabSize="mini"
         android:visibility="gone" />
 
-    <!-- Robot FAB and label -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabRobot"
         android:layout_width="wrap_content"
@@ -996,7 +960,6 @@
         app:fabSize="mini"
         android:visibility="gone" />
 
-    <!-- Image FAB and label -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabImage"
         android:layout_width="wrap_content"
@@ -1007,20 +970,6 @@
         android:src="@android:drawable/ic_menu_gallery"
         app:tint="@android:color/white"
         app:backgroundTint="#9C27B0"
-        app:fabSize="mini"
-        android:visibility="gone" />
-
-    <!-- Start FAB and label -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="368dp"
-        android:src="@android:drawable/ic_media_play"
-        app:tint="@android:color/white"
-        app:backgroundTint="#4CAF50"
         app:fabSize="mini"
         android:visibility="gone" />
 
@@ -1091,20 +1040,6 @@
         android:background="#333333"
         android:padding="8dp"
         android:text="Received Image"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/fabStartLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="72dp"
-        android:layout_marginBottom="376dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Start"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         android:visibility="gone" />
