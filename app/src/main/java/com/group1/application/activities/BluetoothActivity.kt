@@ -1,19 +1,23 @@
 package com.group1.application.activities
 
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
 import com.group1.application.R
 import com.group1.application.bluetooth.BluetoothConnectionListener
 import com.group1.application.bluetooth.BluetoothHelper
@@ -28,13 +32,13 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
 
     private var bluetoothHelper: BluetoothHelper? = null
     private lateinit var statusText: TextView
-    private lateinit var scanButton: Button
-    private lateinit var devicesAdapter: ArrayAdapter<String>
+    private lateinit var scanButton: MaterialButton
+    private lateinit var devicesAdapter: BluetoothDeviceAdapter
     private val devices = mutableListOf<BluetoothDevice>()
 
     private enum class RoleMode { CLIENT, SERVER }
     private var currentMode = RoleMode.CLIENT
-    private lateinit var modeToggleButton: Button
+    private lateinit var modeToggleButton: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +54,7 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         val devicesList = findViewById<ListView>(R.id.devicesList)
         modeToggleButton = findViewById(R.id.modeToggleButton)
 
-        devicesAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        devicesAdapter = BluetoothDeviceAdapter(this, devices)
         devicesList.adapter = devicesAdapter
 
         scanButton.setOnClickListener { scanForDevices() }
@@ -70,8 +74,6 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
                 }
             }
         }
-
-        devicesList.onItemLongClickListener = null
     }
 
     private fun toggleMode() {
@@ -93,7 +95,7 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         } else {
             modeToggleButton.text = "Mode: Server"
             if (!helper.isConnected() && !helper.isWaitingForConnection()) {
-                statusText.text = "Server mode - tap device to wait for incoming connection"
+                statusText.text = "Server mode - tap device to wait for connection"
             }
         }
     }
@@ -121,7 +123,7 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         scanButton.isEnabled = !isConnected && !isWaiting
 
         statusText.text = when {
-            isConnected -> "Connected to Bluetooth device - Ready to send/receive data"
+            isConnected -> "Connected to Bluetooth device"
             isWaiting -> "Waiting for laptop to connect..."
             helper.isBluetoothEnabled() -> "Bluetooth enabled - Ready to scan"
             else -> "Bluetooth disabled - Please enable Bluetooth manually"
@@ -129,69 +131,45 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
     }
 
     private fun scanForDevices() {
-        Log.d(TAG, "scanForDevices() called")
-
         if (PermissionUtils.checkAndRequestBluetoothPermissions(this)) {
             statusText.text = "Please grant Bluetooth permissions"
             return
         }
 
         if (bluetoothHelper?.isBluetoothEnabled() == false) {
-            statusText.text = "Please enable Bluetooth manually to scan for devices"
+            statusText.text = "Please enable Bluetooth manually to scan"
             return
         }
 
         statusText.text = "Scanning for devices..."
         devices.clear()
-        devicesAdapter.clear()
         devicesAdapter.notifyDataSetChanged()
 
         val pairedDevices = bluetoothHelper?.getPairedDevices() ?: emptyList()
-        Log.d(TAG, "Found ${pairedDevices.size} paired devices")
-
         if (pairedDevices.isNotEmpty()) {
             for (device in pairedDevices) {
-                devices.add(device)
-                val deviceName = getDeviceName(device)
-                val deviceAddress = getDeviceAddress(device)
-                devicesAdapter.add("$deviceName (Paired)\n$deviceAddress")
-                Log.d(TAG, "Added paired device: $deviceName - $deviceAddress")
+                if (!devices.any { it.address == device.address }) {
+                    devices.add(device)
+                }
             }
             devicesAdapter.notifyDataSetChanged()
-        } else {
-            Log.w(TAG, "No paired devices found!")
         }
 
-        statusText.text = "Found ${pairedDevices.size} paired devices. Searching for more..."
         bluetoothHelper?.startDiscovery()
 
         Handler(Looper.getMainLooper()).postDelayed({
             bluetoothHelper?.stopDiscovery()
-            val totalDevices = devices.size
-            statusText.text = "Scan completed. Found $totalDevices devices total"
-            Log.d(TAG, "Discovery completed. Total devices found: $totalDevices")
-
-            if (totalDevices == 0) {
-                Log.w(TAG, "No devices found at all - this indicates a permission or Bluetooth issue")
-                statusText.text = "No devices found. Check Bluetooth permissions and ensure devices are discoverable."
-            }
+            statusText.text = "Scan completed. Found ${devices.size} devices"
         }, BluetoothConstants.DISCOVERY_TIMEOUT_MS)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == BluetoothConstants.REQUEST_PERMISSIONS) {
-            val allGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-
-            if (allGranted) {
-                Log.d(TAG, "All permissions granted by user")
-                Toast.makeText(this, "Permissions granted. You can now scan for devices.", Toast.LENGTH_SHORT).show()
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 updateUI()
             } else {
-                Log.w(TAG, "Some permissions denied by user")
-                Toast.makeText(this, "Bluetooth permissions are required for device discovery", Toast.LENGTH_LONG).show()
-                statusText.text = "Permissions required - Please grant Bluetooth permissions"
+                statusText.text = "Permissions required for discovery"
             }
         }
     }
@@ -201,7 +179,7 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         bluetoothHelper = BluetoothHelper(this).also {
             it.setConnectionListener(this)
         }
-        statusText.text = "Connecting to ${getDeviceName(device)} as client..."
+        statusText.text = "Connecting to ${getDeviceName(device)}..."
         bluetoothHelper?.connectToDevice(device)
     }
 
@@ -210,37 +188,25 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         bluetoothHelper = BluetoothHelper(this).also {
             it.setConnectionListener(this)
         }
-        statusText.text = "Waiting for connection from ${getDeviceName(device)} (server mode)..."
+        statusText.text = "Waiting for connection from ${getDeviceName(device)}..."
         bluetoothHelper?.waitForConnectionFromDevice(device)
     }
 
     private fun getDeviceName(device: BluetoothDevice): String {
-        if (!PermissionUtils.checkBluetoothPermissions(this)) return "Unknown Device"
         return try {
-            device.name ?: "Unknown Device"
+            if (PermissionUtils.checkBluetoothPermissions(this)) device.name ?: "Unknown Device" else "Unknown Device"
         } catch (e: SecurityException) {
             "Unknown Device"
         }
     }
 
-    private fun getDeviceAddress(device: BluetoothDevice): String {
-        return try {
-            device.address
-        } catch (e: SecurityException) {
-            "Unknown Address"
-        }
-    }
-
-    // BluetoothConnectionListener implementation
+    private fun getDeviceAddress(device: BluetoothDevice): String = device.address
 
     override fun onDeviceConnected(device: BluetoothDevice) {
         runOnUiThread {
             val deviceName = getDeviceName(device)
             statusText.text = "Connected to $deviceName"
-            Toast.makeText(this, "Connected to $deviceName", Toast.LENGTH_SHORT).show()
-
             bluetoothHelper?.let { DataCommunicationActivity.setBluetoothHelper(it) }
-
             val intent = Intent(this, DataCommunicationActivity::class.java).apply {
                 putExtra(BluetoothConstants.EXTRA_DEVICE_NAME, deviceName)
             }
@@ -250,21 +216,14 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
 
     override fun onWaitingForConnection(device: BluetoothDevice) {
         runOnUiThread {
-            val deviceName = getDeviceName(device)
-            statusText.text = if (currentMode == RoleMode.SERVER) {
-                "Server mode: waiting for $deviceName... (timeout 60s)"
-            } else {
-                "(Unexpected) Waiting for $deviceName..."
-            }
-            Toast.makeText(this, "Waiting for $deviceName", Toast.LENGTH_LONG).show()
+            statusText.text = "Waiting for ${getDeviceName(device)}..."
             updateUI()
         }
     }
 
     override fun onConnectionTimeout() {
         runOnUiThread {
-            statusText.text = "Connection timeout - No incoming connection received"
-            Toast.makeText(this, "Connection timeout. Try again.", Toast.LENGTH_LONG).show()
+            statusText.text = "Connection timeout"
             updateUI()
         }
     }
@@ -276,23 +235,19 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
         }
     }
 
-    override fun onDataReceived(data: String) {
-        // Handle received data
-    }
+    override fun onDataReceived(data: String) {}
 
     override fun onConnectionFailed(error: String) {
         runOnUiThread {
             statusText.text = "Connection failed: $error"
-            Toast.makeText(this, "Connection failed: $error", Toast.LENGTH_LONG).show()
             updateUI()
         }
     }
 
     override fun onDeviceDiscovered(device: BluetoothDevice) {
         runOnUiThread {
-            if (!devices.contains(device)) {
+            if (!devices.any { it.address == device.address }) {
                 devices.add(device)
-                devicesAdapter.add("${getDeviceName(device)}\n${getDeviceAddress(device)}")
                 devicesAdapter.notifyDataSetChanged()
             }
         }
@@ -309,6 +264,34 @@ class BluetoothActivity : AppCompatActivity(), BluetoothConnectionListener {
             it.setConnectionListener(this)
             updateUI()
             updateModeUI()
+        }
+    }
+
+    /**
+     * Custom adapter for Bluetooth devices to make the list look beautiful
+     */
+    private inner class BluetoothDeviceAdapter(context: Context, private val deviceList: List<BluetoothDevice>) :
+        ArrayAdapter<BluetoothDevice>(context, 0, deviceList) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.bluetooth_device_item, parent, false)
+            val device = getItem(position)
+
+            val nameText = view.findViewById<TextView>(R.id.deviceName)
+            val addressText = view.findViewById<TextView>(R.id.deviceAddress)
+            val icon = view.findViewById<ImageView>(R.id.deviceIcon)
+
+            device?.let {
+                val name = getDeviceName(it)
+                nameText.text = name
+                addressText.text = it.address
+                
+                // If device is paired, maybe show a different icon or indicator
+                // For now, use the default bluetooth icon
+                icon.setImageResource(android.R.drawable.stat_sys_data_bluetooth)
+            }
+
+            return view
         }
     }
 }
