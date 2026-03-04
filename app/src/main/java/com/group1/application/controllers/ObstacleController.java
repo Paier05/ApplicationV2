@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -212,7 +214,9 @@ public class ObstacleController {
         if (obstacleActionStatus != null) obstacleActionStatus.setText("Click Clear All to remove all obstacles");
 
         updateConfirmButtonState();
-        if (obstacleListener != null) obstacleListener.updateGridTableHeader();
+        if (obstacleListener != null) {
+            obstacleListener.updateGridTableHeader();
+        }
         showToast("Remove mode: tap Clear All to confirm");
     }
 
@@ -358,13 +362,13 @@ public class ObstacleController {
 
         int obstacleRow = temporaryObstacleRow;
         int obstacleCol = temporaryObstacleCol;
-        int displayRow = gridAdapter.getGridSize() - 2 - obstacleRow;
-        int displayCol = obstacleCol - 1;
+        int displayRow = (gridAdapter.getGridSize() - 2 - obstacleRow) * 10;
+        int displayCol = (obstacleCol - 1) * 10;
 
         // Confirm adding the obstacle permanently
         gridAdapter.setObstacle(obstacleRow, obstacleCol, true);
 
-        showToast("Obstacle confirmed at (" + displayRow + ", " + displayCol + ")");
+        showToast("Obstacle confirmed at (" + displayCol + ", " + displayRow + ")");
 
         // Clear the temporary row/column highlight
         gridAdapter.clearTempRowColHighlight();
@@ -659,7 +663,9 @@ public class ObstacleController {
         if (borderDirectionSection != null) borderDirectionSection.setVisibility(View.GONE);
         if (clearAllObstaclesButton != null) clearAllObstaclesButton.setVisibility(View.GONE);
         updateConfirmButtonState();
-        if (obstacleListener != null) obstacleListener.updateGridTableHeader();
+        if (obstacleListener != null) {
+            obstacleListener.updateGridTableHeader();
+        }
     }
 
     // Helpers to manage continuous drag lifecycle
@@ -676,17 +682,84 @@ public class ObstacleController {
     }
 
     public void showDirectionSelectionDialog(final int startRow, final int startCol, final int endRow, final int endCol) {
-        final String[] directions = {"Up", "Down", "Left", "Right"};
+        // Calculate display coordinates (times 10)
+        int displayStartRow = (gridAdapter.getGridSize() - 2 - startRow) * 10;
+        int displayStartCol = (startCol - 1) * 10;
+        int displayEndRow = (gridAdapter.getGridSize() - 2 - endRow) * 10;
+        int displayEndCol = (endCol - 1) * 10;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Select Obstacle Direction");
-        builder.setItems(directions, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selectedDirection = getDirectionFromDialog(which);
-                addObstacleBatch(startRow, startCol, endRow, endCol, selectedDirection);
+        builder.setTitle("Confirm Obstacle Placement");
+
+        // Custom view for coordinates and direction
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(60, 40, 60, 20);
+
+        final EditText inputX = new EditText(context);
+        inputX.setHint("X Coordinate");
+        inputX.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+        final EditText inputY = new EditText(context);
+        inputY.setHint("Y Coordinate");
+        inputY.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+        if (startRow == endRow && startCol == endCol) {
+            inputX.setText(String.valueOf(displayEndCol));
+            inputY.setText(String.valueOf(displayEndRow));
+
+            TextView labelX = new TextView(context); labelX.setText("X (0-190):");
+            TextView labelY = new TextView(context); labelY.setText("Y (0-190):");
+            layout.addView(labelX); layout.addView(inputX);
+            layout.addView(labelY); layout.addView(inputY);
+        } else {
+            TextView rangeText = new TextView(context);
+            rangeText.setText("Placing obstacles from (" + displayStartCol + "," + displayStartRow + ") to (" + displayEndCol + "," + displayEndRow + ")");
+            rangeText.setPadding(0, 0, 0, 20);
+            layout.addView(rangeText);
+        }
+
+        TextView labelDir = new TextView(context);
+        labelDir.setText("Select Facing Direction:");
+        labelDir.setPadding(0, 20, 0, 10);
+        layout.addView(labelDir);
+
+        final Spinner dirSpinner = new Spinner(context);
+        String[] directions = {"Up (North)", "Down (South)", "Left (West)", "Right (East)"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, directions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dirSpinner.setAdapter(adapter);
+        layout.addView(dirSpinner);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Add Obstacle", (dialog, which) -> {
+            String selectedDir = getDirectionFromDialog(dirSpinner.getSelectedItemPosition());
+
+            if (startRow == endRow && startCol == endCol) {
+                try {
+                    int newX = Integer.parseInt(inputX.getText().toString());
+                    int newY = Integer.parseInt(inputY.getText().toString());
+
+                    // Validate
+                    if (newX < 0 || newX > 190 || newY < 0 || newY > 190) {
+                        showToast("Invalid coordinates (0-190)");
+                        return;
+                    }
+
+                    int newGridCol = (newX / 10) + 1;
+                    int newGridRow = (gridAdapter.getGridSize() - 2) - (newY / 10);
+
+                    addObstacleBatch(newGridRow, newGridCol, newGridRow, newGridCol, selectedDir);
+                } catch (NumberFormatException e) {
+                    showToast("Please enter valid numbers");
+                }
+            } else {
+                addObstacleBatch(startRow, startCol, endRow, endCol, selectedDir);
             }
         });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
