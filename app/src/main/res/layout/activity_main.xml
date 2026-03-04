@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -7,34 +8,89 @@
     android:background="@android:color/white"
     tools:context=".activities.MainActivity">
 
+    <!-- Decorative Top Background Circle -->
+    <View
+        android:id="@+id/topCircle"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="-150dp"
+        android:layout_marginEnd="-100dp"
+        android:background="@drawable/circle_background"
+        android:backgroundTint="#E3F2FD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Decorative Bottom Background Circle -->
+    <View
+        android:id="@+id/bottomCircle"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginBottom="-125dp"
+        android:layout_marginStart="-50dp"
+        android:background="@drawable/circle_background"
+        android:backgroundTint="#F3E5F5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center">
+        android:padding="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/welcomeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="MDP Hardware Control"
+            android:textColor="#333333"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MDP Group Hardware Lab 1"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="32dp"
-            android:gravity="center" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="48dp"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:text="Group Hardware Lab 1"
+            android:textColor="#666666"
+            android:textSize="16sp" />
 
-        <Button
+        <!-- Start Button with Elevation and Custom Style -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/startButton"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:text="Start"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="240dp"
+            android:layout_height="64dp"
+            android:layout_margin="16dp"
+            android:text="Start Control"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:backgroundTint="#2196F3"
+            app:cornerRadius="32dp"
+            app:backgroundTint="#2196F3"
             android:textColor="@android:color/white"
-            android:layout_margin="16dp" />
+            app:icon="@android:drawable/ic_media_play"
+            app:iconPadding="12dp"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:alpha="0.5"
+            android:text="Version 2.1.0"
+            android:textColor="#999999"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
