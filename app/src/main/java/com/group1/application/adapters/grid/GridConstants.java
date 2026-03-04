@@ -11,9 +11,9 @@ public class GridConstants {
     public static final int DATA_SIZE = GRID_SIZE - 1; // 0-19 data rows/cols
 
     // Colors
-    public static final int HEADER_COLOR = Color.parseColor("#2196F3");
-    public static final int DEFAULT_CELL_COLOR = Color.parseColor("#E0E0E0");
-    public static final int OBSTACLE_COLOR = Color.parseColor("#FF5722");
+    public static final int HEADER_COLOR = Color.parseColor("#1565C0"); // Deeper blue for better visibility
+    public static final int DEFAULT_CELL_COLOR = Color.parseColor("#F5F5F5"); // Light gray so white lines show through
+    public static final int OBSTACLE_COLOR = Color.parseColor("#333333"); // Dark gray for obstacles
     public static final int ROBOT_COLOR = Color.parseColor("#03A9F4");
     public static final int ROBOT_FRONT_COLOR = Color.parseColor("#FFEB3B");
     public static final int SELECTED_COLOR = Color.parseColor("#FFEB3B");
@@ -27,7 +27,7 @@ public class GridConstants {
     public static final int ORIENTATION_SOUTH = 2;
     public static final int ORIENTATION_WEST = 3;
 
-    // Text sizes
-    public static final float NORMAL_TEXT_SIZE = 5f;
-    public static final float TARGET_TEXT_SIZE = 8f;
+    // Text sizes - Increased for better visibility on larger grid
+    public static final float NORMAL_TEXT_SIZE = 10f; 
+    public static final float TARGET_TEXT_SIZE = 12f;
 }
