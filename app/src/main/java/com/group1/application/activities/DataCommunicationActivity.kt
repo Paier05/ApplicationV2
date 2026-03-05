@@ -496,6 +496,9 @@ class DataCommunicationActivity : AppCompatActivity(),
         val context = this
         val timestamp = getCurrentTimestamp()
         
+        // Overwrite existing images by clearing the container
+        imageContainer.removeAllViews()
+
         val linearLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
@@ -533,8 +536,8 @@ class DataCommunicationActivity : AppCompatActivity(),
         linearLayout.addView(textView)
         linearLayout.addView(imageView)
         
-        // Add to the top of the container so latest is first
-        imageContainer.addView(linearLayout, 0)
+        // Add to the container
+        imageContainer.addView(linearLayout)
     }
 
     override fun showToast(message: String) {
