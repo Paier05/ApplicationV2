@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start"
-                    app:backgroundTint="#DCEDC8"
+                    app:backgroundTint="#40E0D0"
                     android:textColor="#33691E"
                     android:textSize="12sp"
                     app:cornerRadius="20dp"

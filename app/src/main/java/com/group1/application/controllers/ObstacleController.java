@@ -571,8 +571,8 @@ public class ObstacleController {
         if (dir == null) return 8; // SKIP when not set
         switch (dir.toUpperCase()) {
             case "N": return 0;
-            case "E": return 1;
-            case "S": return 2;
+            case "E": return 2;
+            case "S": return 1;
             case "W": return 3;
             default: return 8; // SKIP for unknown
         }

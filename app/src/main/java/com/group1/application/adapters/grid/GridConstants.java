@@ -27,7 +27,7 @@ public class GridConstants {
     public static final int ORIENTATION_SOUTH = 2;
     public static final int ORIENTATION_WEST = 3;
 
-    // Text sizes - Increased for better visibility on larger grid
-    public static final float NORMAL_TEXT_SIZE = 10f; 
-    public static final float TARGET_TEXT_SIZE = 12f;
+    // Text sizes - Reduced to fit within small 15dp grid cells
+    public static final float NORMAL_TEXT_SIZE = 7f; 
+    public static final float TARGET_TEXT_SIZE = 7f;
 }
