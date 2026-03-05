@@ -895,6 +895,16 @@
 
     </LinearLayout>
 
+    <!-- Scrim background for FAB menu -->
+    <View
+        android:id="@+id/fabScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
+
     <!-- FAB Menu -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMain"
@@ -974,74 +984,114 @@
         android:visibility="gone" />
 
     <!-- FAB Labels -->
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabSendLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="96dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Send Data"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Send Data"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabReceiveLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="152dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Receive Data"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Receive Data"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabObstacleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="208dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Obstacle Mode"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Obstacle Mode"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabRobotLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="264dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Robot Mode"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Robot Mode"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/fabImageLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="72dp"
         android:layout_marginBottom="320dp"
-        android:background="#333333"
-        android:padding="8dp"
-        android:text="Received Image"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Received Image"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

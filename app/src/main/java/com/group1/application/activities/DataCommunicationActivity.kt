@@ -143,7 +143,8 @@ class DataCommunicationActivity : AppCompatActivity(),
             findViewById(R.id.obstacleControlSection),
             findViewById(R.id.robotControlSection),
             findViewById(R.id.imageSection),
-            findViewById(R.id.gridTableSection)
+            findViewById(R.id.gridTableSection),
+            findViewById(R.id.fabScrim)
         )
 
         // Setup Robot Controller
