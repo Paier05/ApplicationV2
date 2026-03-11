@@ -48,11 +48,11 @@ public class MessageParser {
         imageIdMap.put("X", "33");
         imageIdMap.put("Y", "34");
         imageIdMap.put("Z", "35");
-        imageIdMap.put("UP_ARROW", "36");
-        imageIdMap.put("DOWN_ARROW", "37");
-        imageIdMap.put("RIGHT_ARROW", "38");
-        imageIdMap.put("LEFT_ARROW", "39");
-        imageIdMap.put("STOP", "40");
+        imageIdMap.put("Up", "36");
+        imageIdMap.put("Down", "37");
+        imageIdMap.put("Right", "38");
+        imageIdMap.put("Left", "39");
+        imageIdMap.put("Stop", "40");
     }
 
     public interface OnMessageParsedListener {
